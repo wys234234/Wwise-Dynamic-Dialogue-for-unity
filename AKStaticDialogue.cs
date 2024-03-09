@@ -43,7 +43,7 @@ public class AKStaticDialogue : MonoBehaviour
     public List<StatePath> statePaths;
 
 
-    // ³ÉÎªÀàµÄ³ÉÔ±±äÁ¿£¬ÒÔ±ãÔÚÕû¸öÀàÖĞ·ÃÎÊ
+    // æˆä¸ºç±»çš„æˆå‘˜å˜é‡ï¼Œä»¥ä¾¿åœ¨æ•´ä¸ªç±»ä¸­è®¿é—®
     private uint sequenceID;
     private uint eStatic_Dialogue;
     private uint[] aStatic_Dialogue = new uint[10];
@@ -52,10 +52,10 @@ public class AKStaticDialogue : MonoBehaviour
 
     private void Start()
     {
-        //»ñÈ¡ID
+        //è·å–ID
         eStatic_Dialogue = AkSoundEngine.GetIDFromString(sEventName);
 
-        // ºÏ²¢ºÍÅÅĞò switchPaths ºÍ statePaths
+        // åˆå¹¶å’Œæ’åº switchPaths å’Œ statePaths
         List<PathItem> allPaths = new List<PathItem>();
         foreach (var sp in switchPaths)
         {
@@ -67,10 +67,10 @@ public class AKStaticDialogue : MonoBehaviour
         }
         allPaths.Sort((x, y) => x.PathID.CompareTo(y.PathID));
 
-        // Ìî³ä aStatic_Dialogue Êı×é
+        // å¡«å…… aStatic_Dialogue æ•°ç»„
         for (int i = 0; i < allPaths.Count; i++)
         {
-            if (i >= aStatic_Dialogue.Length) break; // È·±£²»³¬¹ıÊı×é´óĞ¡
+            if (i >= aStatic_Dialogue.Length) break; // ç¡®ä¿ä¸è¶…è¿‡æ•°ç»„å¤§å°
 
             if (allPaths[i].Type == PathItem.ItemType.Switch)
             {
@@ -85,16 +85,16 @@ public class AKStaticDialogue : MonoBehaviour
 
     public void PlayDialogue()
     {
-        sequenceID = AkSoundEngine.DynamicSequenceOpen(gameObject);
+        sequenceID = AkSoundEngine.DynamicSequenceOpen(gameObject, (uint)AkCallbackType.AK_EndOfDynamicSequenceItem, DynamicSequenceCallback, null);
 
-        // ¼ì²éÊı×éÖĞ·ÇÁãÊıÁ¿,Ò²¾ÍÊÇÊµ¼ÊÒªÓÃµÄÊıÁ¿
+        // æ£€æŸ¥æ•°ç»„ä¸­éé›¶æ•°é‡,ä¹Ÿå°±æ˜¯å®é™…è¦ç”¨çš„æ•°é‡
         int validEntriesCount = Array.FindAll(aStatic_Dialogue, id => id != 0).Length;
-        // ½âÎö´ËÊÂ¼ş²¢»ñÈ¡½ÚµãID
+        // è§£ææ­¤äº‹ä»¶å¹¶è·å–èŠ‚ç‚¹ID
         uint nodeID = AkSoundEngine.ResolveDialogueEvent(eStatic_Dialogue, aStatic_Dialogue, (uint)validEntriesCount);
-        // ½ÚµãID
+        // èŠ‚ç‚¹ID
         Debug.Log($"Resolved nodeID for this event: {nodeID}");
 
-        //Èç¹ûnodeIDÓĞĞ§£¬ÔòÌí¼Óµ½²¥·ÅÁĞ±í
+        //å¦‚æœnodeIDæœ‰æ•ˆï¼Œåˆ™æ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨
         if (nodeID != 0)
         {
             AkPlaylist playlist = AkSoundEngine.DynamicSequenceLockPlaylist(sequenceID);
@@ -105,7 +105,7 @@ public class AKStaticDialogue : MonoBehaviour
         }
         else
         {
-            // Èç¹ûnodeIDÊÇ0±íÊ¾ÎŞĞ§£¬²»Ìí¼Óµ½²¥·ÅÁĞ±í£¬²»²¥·Å
+            // å¦‚æœnodeIDæ˜¯0è¡¨ç¤ºæ— æ•ˆï¼Œä¸æ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨ï¼Œä¸æ’­æ”¾
             Debug.LogWarning("nodeID = 0");
             AkSoundEngine.DynamicSequenceClose(sequenceID);
         }
@@ -113,7 +113,7 @@ public class AKStaticDialogue : MonoBehaviour
 
     public void StopDialogue()
     {
-        // Í£Ö¹¶¯Ì¬ĞòÁĞ£¬Í£Ö¹´Ë¶Ô»°
+        // åœæ­¢åŠ¨æ€åºåˆ—ï¼Œåœæ­¢æ­¤å¯¹è¯
         if (sequenceID != 0)
         {
             AkSoundEngine.DynamicSequenceStop(sequenceID);
@@ -124,20 +124,20 @@ public class AKStaticDialogue : MonoBehaviour
     {
         if (in_type == AkCallbackType.AK_EndOfDynamicSequenceItem)
         {
-            // ½« AkCallbackInfo Ç¿ÖÆ×ª»»Îª AkDynamicSequenceItemCallbackInfo
+            // å°† AkCallbackInfo å¼ºåˆ¶è½¬æ¢ä¸º AkDynamicSequenceItemCallbackInfo
             var dynamicSequenceInfo = (AkDynamicSequenceItemCallbackInfo)in_info;
             EndDialogueEvent.Invoke();
-            //Debug.Log("½áÊø¶Ô»°ÁË");
+            //Debug.Log("ç»“æŸå¯¹è¯äº†");
         }
     }
 
 
-    //  Switch »ò State
+    //  Switch æˆ– State
     public void SetSwitchOrState(int pathID, Switch switchValue = null, State stateValue = null)
     {
         if (switchValue != null)
         {
-            // ÔÚ switchPaths ²éÕÒÏàÓ¦µÄ PathID ²¢ÉèÖÃ Switch
+            // åœ¨ switchPaths æŸ¥æ‰¾ç›¸åº”çš„ PathID å¹¶è®¾ç½® Switch
             var switchPath = switchPaths.Find(sp => sp.PathID == pathID);
             if (switchPath != null)
             {
@@ -147,7 +147,7 @@ public class AKStaticDialogue : MonoBehaviour
         }
         else if (stateValue != null)
         {
-            // ÔÚ statePaths ²éÕÒÏàÓ¦µÄ PathID ²¢ÉèÖÃ State
+            // åœ¨ statePaths æŸ¥æ‰¾ç›¸åº”çš„ PathID å¹¶è®¾ç½® State
             var statePath = statePaths.Find(sp => sp.PathID == pathID);
             if (statePath != null)
             {
@@ -155,6 +155,6 @@ public class AKStaticDialogue : MonoBehaviour
                 aStatic_Dialogue[pathID] = statePath.sStatePath.Id;
             }
         }
-        //Debug.Log("¶¯Ì¬¶Ô»°±»ĞŞ¸ÄÁË");
+        //Debug.Log("åŠ¨æ€å¯¹è¯è¢«ä¿®æ”¹äº†");
     }
 }
