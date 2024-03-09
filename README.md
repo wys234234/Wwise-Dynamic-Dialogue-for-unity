@@ -1,5 +1,6 @@
 # Wwise-Dynamic-Dialogue-for-unity
-Wwise Dynamic Dialogue for unity，
+
+Integrating Wwise Dynamic Dialogue Systems in Unity via the Inspector
 
 Just use AKStaticDialogue and set your parameters in the inspector
 For more APIs calls, please refer to the official documentation
