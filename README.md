@@ -2,7 +2,7 @@
 Wwise Dynamic Dialogue for unity，
 
 Just use AKStaticDialogue and set your parameters in the inspector
-For more APIs, please refer to the official documentation
+For more APIs calls, please refer to the official documentation
 
 
 https://www.audiokinetic.com/zh/library/edge/?source=SDK&id=namespace_a_k_1_1_sound_engine_1_1_dynamic_sequence.html
