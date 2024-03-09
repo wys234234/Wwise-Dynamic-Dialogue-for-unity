@@ -5,6 +5,8 @@ Integrating Wwise Dynamic Dialogue Systems in Unity via the Inspector
 Just use AKStaticDialogue and set your parameters in the inspector
 For more APIs calls, please refer to the official documentation
 
+（旧）AKStaticDialogue.cs：An old base code, for reference only
+
 
 https://www.audiokinetic.com/zh/library/edge/?source=SDK&id=namespace_a_k_1_1_sound_engine_1_1_dynamic_sequence.html
 
